@@ -26,7 +26,7 @@ function ProfileRelationCommunityBox(props){
             ?.map((follower) => {
               return(
                 <li key={follower.id}>
-                  <a href={`users/${follower.url}`}>
+                  <a href={follower.url}>
                     <img src={follower.html_url+'.png'}/>
                     <span>{follower.login}</span>
                   </a> 
