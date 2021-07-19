@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component, useState, useEffect} from "react";
 import { 
   Box, 
   Form,
@@ -13,37 +13,81 @@ import {
 } from "../src/lib/AlurakutCommons"
 
 
+function ProfileRelationCommunityBox(props){
+  console.log(props)
+  return(
+    <Box>
+      <ProfileRelationsBoxWrapper>
+        <h2 className="smallTitle">
+          Seguidores ({props.followers?.length})
+        </h2>
+        <ul>
+          {(props.followers)
+            ?.map((follower) => {
+              return(
+                <li key={follower.id}>
+                  <a href={`users/${follower.url}`}>
+                    <img src={follower.html_url+'.png'}/>
+                    <span>{follower.login}</span>
+                  </a> 
+                </li>
+              )
+            })
+          }
+        </ul>
+      </ProfileRelationsBoxWrapper>
+    </Box>
+  )
+}
+
+
 export default function Home() {
-  
-  const githubBaseUrl = 'https://github.com/';
-  const githubUser = 'vanisantos';
+
+  const Resources = {
+    githubBaseUrl: 'https://github.com/',
+    githubAPIBaseUrl: 'http://api.github.com',
+    githubUser: 'vanisantos'
+  }
 
   const communityFriends = [
     "omariosouto",
+    "glaucia86",
     "juunegreiros",
     "peas",
-    "danvitoriano",
     "ElasProgramam",
     "Kamilahsantos"
   ];
 
-  const [communities, setCommunities] = React.useState([{
+  const [communities, setCommunities] = useState([{
     id: '12802378123789378912789789123896123', 
     title: 'Eu odeio acordar cedo',
     image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
   }]);
 
+  const [followers, setFollowers] = useState([]);
+  useEffect(function() {
+    fetch(`${Resources.githubAPIBaseUrl}/users/${Resources.githubUser}/followers`)
+    .then(function (responseServer){
+      return responseServer.json();
+    })
+    .then(function (responseData) {
+      setFollowers(responseData);
+    })
+  }, [])
+
+  console.log(followers)
+
   return (
     <>
       <AlurakutMenu
-        githubUser={githubUser}
+        githubUser={Resources.githubUser}
       />
       <MainGrid>
 
         <div className='profileArea' style={{ gridArea: 'profileArea' }}>
           <ProfileSideBar 
-            githubBaseUrl={githubBaseUrl}
-            githubUser={githubUser}
+            githubBaseUrl={Resources.githubBaseUrl}
+            githubUser={Resources.githubUser}
           />
         </div>
 
@@ -75,7 +119,7 @@ export default function Home() {
                   return(
                     <li key={friend}>
                       <a href={`users/${friend}`}>
-                        <img src={githubBaseUrl + friend + '.png'}/>
+                        <img src={Resources.githubBaseUrl + friend + '.png'}/>
                         <span>{friend}</span>
                       </a> 
                     </li>
@@ -84,28 +128,9 @@ export default function Home() {
               }
             </ul>
           </ProfileRelationsBoxWrapper>
-
-          <Box>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Comunidades ({communities?.length})
-              </h2>
-            <ul>
-              {(communities)
-                ?.map((community) => {
-                  return(
-                    <li key={community.id}>
-                      <a href={`users/${community.title}`}>
-                        <img src={community.image}/>
-                        <span>{community.title}</span>
-                      </a> 
-                    </li>
-                  )
-                })
-              }
-            </ul>
-          </ProfileRelationsBoxWrapper>
-          </Box>
+          <ProfileRelationCommunityBox
+            followers={followers}
+          />
         </div>
       </MainGrid>
     </>
