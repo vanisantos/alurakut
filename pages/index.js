@@ -14,7 +14,6 @@ import {
 
 
 function ProfileRelationCommunityBox(props){
-  console.log(props)
   return(
     <Box>
       <ProfileRelationsBoxWrapper>
@@ -26,7 +25,7 @@ function ProfileRelationCommunityBox(props){
             ?.map((follower) => {
               return(
                 <li key={follower.id}>
-                  <a href={follower.url}>
+                  <a href={follower.html_url}>
                     <img src={follower.html_url+'.png'}/>
                     <span>{follower.login}</span>
                   </a> 
@@ -45,7 +44,7 @@ export default function Home() {
 
   const Resources = {
     githubBaseUrl: 'https://github.com/',
-    githubAPIBaseUrl: 'http://api.github.com',
+    githubAPIBaseUrl: 'https://api.github.com',
     githubUser: 'vanisantos'
   }
 
@@ -74,8 +73,6 @@ export default function Home() {
       setFollowers(responseData);
     })
   }, [])
-
-  console.log(followers)
 
   return (
     <>
